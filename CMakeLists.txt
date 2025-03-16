@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.30)
 project("TaskScheduleApp" LANGUAGES CXX)
 
+# Set the build type to Debug
+#set (CMAKE_BUILD_TYPE "Debug")
+
 # Set the C++ standard to C++17
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -10,7 +13,9 @@ set (LIB_FOLDER "lib")
 set (TASK_SCHEDULER_LIB         "TaskSchedulerLib.lib")
 set (TASK_SCHEDULER_DLL         "TaskSchedulerLib.dll")
 set (TASK_SCHEDULER_INCLUDES    ${CMAKE_CURRENT_SOURCE_DIR}/${SRC_FOLDER}/${LIB_FOLDER})
-set (CMAKE_INSTALL_PREFIX       ${CMAKE_CURRENT_SOURCE_DIR}/install)
+set (CMAKE_INSTALL_PREFIX       ${CMAKE_CURRENT_SOURCE_DIR}/install/${CMAKE_BUILD_TYPE})
+
+
 # Enable position-independent code (PIC) for shared libraries
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 

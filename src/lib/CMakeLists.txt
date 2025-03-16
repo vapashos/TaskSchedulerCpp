@@ -34,4 +34,11 @@ install(TARGETS ${PROJECT_NAME}
      RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}
  )
 
+ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(LibExtention ".lib")
+ else()
+    set(LibExtention ".so")
+endif()
+
+message(STATUS "INSTALL ${PROJECT_NAME}${LibExtention} DESTINATION: ${CMAKE_INSTALL_PREFIX}")
 
