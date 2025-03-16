@@ -47,7 +47,7 @@ TaskScheduler is a C++ project that implements a task scheduling system. It allo
 
 2. Run the executable:
     ```sh
-    ./TaskScheduleDriver
+    ./TaskScheduleDriver  [-h] [-nthreads <num_threads>] [-ntasks <num_tasks>]
     ```
 
 ## Project Structure
@@ -57,23 +57,7 @@ TaskScheduler is a C++ project that implements a task scheduling system. It allo
 - `build`: Directory for build files
 - `install`: Directory for installed files
 
-## Usage
 
-To use the TaskScheduler library in your project, include the header files and link against the library:
 
-```cpp
-#include <TaskScheduler.h>
 
-// Create a task scheduler with 4 threads
-std::condition_variable cv;
-ITaskSchedulerPtr scheduler = CreateScheduler(4, cv);
 
-// Schedule tasks
-scheduler->Schedule([]() { std::cout << "Task 1\n"; }, 10, 0.0);
-scheduler->Schedule([]() { std::cout << "Task 2\n"; }, 90, 0.0);
-
-// Run the scheduler
-scheduler->Run();
-
-// Terminate the scheduler
-scheduler->Terminate();
