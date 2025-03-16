@@ -13,7 +13,6 @@
 
 #include <cstdint>
 #include <memory>
-#include "TaskSchedulerTypes.h"
 
 using void_callback = void(*)();
 
@@ -42,6 +41,9 @@ public:
     //! \param priority of the task
 	//! \param deadline of the task
     virtual void Schedule(void_callback f, uint32_t priority, double deadline) = 0;
+
+	//! Start the scheduler
+	virtual void Start() = 0;
 
     //! Terminate the scheduler, release all resources
     virtual void Terminate() = 0;
