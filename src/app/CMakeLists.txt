@@ -1,7 +1,7 @@
 ﻿# CMakeList.txt : CMake project for TaskSchedulerDriver, include source and define
 # project specific logic here.
 #
-cmake_minimum_required (VERSION 3.30)
+cmake_minimum_required (VERSION 3.21)
 
 project (TaskSchedulerDriver VERSION 1.0 LANGUAGES CXX)	
 
@@ -16,16 +16,17 @@ set(sources
 # Add source to this project's executable.
 add_executable (${PROJECT_NAME} ${sources} ${includes})
 
-# Link against the shared library
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/${SRC_FOLDER}/${LIB_FOLDER}/${CMAKE_BUILD_TYPE}/${TASK_SCHEDULER_LIB})
-
 # Include the library headers
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/src/lib)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/src/lib)
+
+# Link against the shared library
+target_link_libraries(${PROJECT_NAME} PUBLIC ${TASK_SCHEDULER_LIB_BINARIES}/${TASK_SCHEDULER_LIB_TARGET})
+
 
 # Install the executable
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION  ${CMAKE_INSTALL_PREFIX}
 )
 
-
 message(STATUS "INSTALL ${PROJECT_NAME}.exe DESTINATION: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "APP TaskSchedulerDriver INCLUDE DIRECTORIES : ${CMAKE_SOURCE_DIR}/src/lib")

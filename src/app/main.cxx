@@ -10,14 +10,18 @@
 #include <mutex>
 #include <string>
 #include <random>
+#include <climits>
+#include <cstring>
 #ifdef _WIN32
 #include <Windows.h>
 #define LOAD_FUNC_ADDR(moduleHandler, funct)      GetProcAddress(moduleHandler, funct)
 #define MODULE_HANDLER                            HMODULE   
+#define MODULE_NAME "TaskSchedulerLib.dll"
 #else
 #include <dlfcn.h>
 #define LOAD_FUNC_ADDR(moduleHandler, funct)      dlsym(moduleHandler, funct)
 #define MODULE_HANDLER                            void*
+#define MODULE_NAME "libTaskSchedulerLib.so"
 #endif
 using namespace std;
 
@@ -37,10 +41,11 @@ public:
         hModule_ = dlopen(libName,RTLD_LAZY);
         #endif
         if (!hModule_) {
-            throw exception("Failed to load DLL!\n");
+            std::string msg(string("Failed to load")+MODULE_NAME);
+            throw runtime_error(msg);
         }
 
-		cout << "DLL loaded successfully\n";
+		cout << "Module loaded successfully\n";
     }
     ~LibraryLoader()
     {
@@ -57,7 +62,7 @@ public:
         {
             CreateScheduler_ = (CreateSchedulerFunc)LOAD_FUNC_ADDR(hModule_, "CreateScheduler");
             if(!CreateScheduler_)
-                throw exception("Failed to load CreateScheduler function\n");
+                throw runtime_error("Failed to load CreateScheduler function\n");
         }
 
         return CreateScheduler_(threads_nm,mainThreadCV);            
@@ -110,7 +115,7 @@ int main(int argc, char** argv)
     }
 
     try {
-		LibraryLoader ll("TaskSchedulerLib.dll");
+		LibraryLoader ll(MODULE_NAME);
         std::condition_variable cv_wait_for_workers;
         ITaskSchedulerPtr scheduler(ll.CreateScheduler(num_threads,cv_wait_for_workers));
 
