@@ -11,7 +11,7 @@ TaskScheduler is a C++ project that implements a task scheduling system. It allo
 
 ## Requirements
 
-- CMake 3.30 or higher
+- CMake 3.21 or higher
 - C++17 compatible compiler
 
 ## Building the Project
