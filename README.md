@@ -35,7 +35,7 @@ TaskScheduler is a C++ project that implements a task scheduling system. It allo
 
 4. Build the project:
     ```sh
-    cmake --build .
+    cmake --build . --target install
     ```
 
 ## Running the Project
