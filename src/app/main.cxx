@@ -12,6 +12,7 @@
 #include <random>
 #include <climits>
 #include <cstring>
+#include <iomanip>
 #ifdef _WIN32
 #include <Windows.h>
 #define LOAD_FUNC_ADDR(moduleHandler, funct)      GetProcAddress(moduleHandler, funct)
@@ -25,12 +26,22 @@
 #endif
 using namespace std;
 
+static void printCurrentTime() {
+    // Get the current time as a time_point
+    auto now = std::chrono::system_clock::now();
+
+    // Convert to time_t to get calendar time
+    std::time_t currentTime = std::chrono::system_clock::to_time_t(now);
+
+    // Convert to local time and format it
+    std::cout << "Current Time: " << std::put_time(std::localtime(&currentTime), "%Y-%m-%d %H:%M:%S") << std::endl;
+}
 
 class LibraryLoader
 {
 public:
 
-    using CreateSchedulerFunc = ITaskScheduler* (*)(size_t,std::condition_variable&);
+    using CreateSchedulerFunc = ITaskScheduler* (*)(size_t);
 
 
     LibraryLoader(const char* libName)
@@ -45,7 +56,8 @@ public:
             throw runtime_error(msg);
         }
 
-		cout << "Module loaded successfully\n";
+		cout << "Module loaded successfully ";
+        printCurrentTime();
     }
     ~LibraryLoader()
     {
@@ -56,7 +68,7 @@ public:
         #endif
     }
 
-    ITaskScheduler* CreateScheduler(size_t threads_nm,std::condition_variable& mainThreadCV)
+    ITaskScheduler* CreateScheduler(size_t threads_nm)
     {
         if(!CreateScheduler_)
         {
@@ -65,7 +77,7 @@ public:
                 throw runtime_error("Failed to load CreateScheduler function\n");
         }
 
-        return CreateScheduler_(threads_nm,mainThreadCV);            
+        return CreateScheduler_(threads_nm);            
     }
 
 private:
@@ -90,8 +102,8 @@ uint32_t getRandomPriority() {
 
 int main(int argc, char** argv)
 {
-    size_t num_threads{ std::thread::hardware_concurrency() };
-    size_t num_tasks{50};
+    size_t num_threads{ 10 };
+    size_t num_tasks{100000};
     // Parse command-line arguments
     for (int i = 1; i < argc; ++i)
     {
@@ -115,22 +127,17 @@ int main(int argc, char** argv)
     }
 
     try {
+        std::cout << "Number of threads: " << num_threads << "number of tasks "<<num_tasks<<std::endl;
 		LibraryLoader ll(MODULE_NAME);
         std::condition_variable cv_wait_for_workers;
-        ITaskSchedulerPtr scheduler(ll.CreateScheduler(num_threads,cv_wait_for_workers));
+        ITaskSchedulerPtr scheduler(ll.CreateScheduler(num_threads));
 
         for(uint32_t i = 0; i < num_tasks; i++)
         {
-            uint32_t priority = getRandomPriority();
-            scheduler->Schedule([]() { cout << "Task With Priority "<<endl; }, priority, 0.0);
+            uint32_t priority = getRandomPriority()%100;
+            scheduler->Schedule([]() { cout << "Hello from thread "<<endl; }, priority, 0.0);
         }
         
-		scheduler->Start();
-        std::mutex mtx_wait_for_workers;
-        std::unique_lock<std::mutex> lock(mtx_wait_for_workers);
-        cv_wait_for_workers.wait(lock, [scheduler]() { return !scheduler->IsQueueEmpty(); });
-        
-        scheduler->Terminate();
 		const LatencyStats* stats = scheduler->GetLatencyStats();
 		cout << "Latency Stats: Min: " << stats->min << " Max: " << stats->max << " Avg: " << stats->Avg() << endl;
 		
