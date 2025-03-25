@@ -25,6 +25,11 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set (TASK_SCHEDULER_LIB_TARGET  "lib${TASK_SCHEDULER_LIB_NAME}.so")
     set (TASK_SCHEDULER_LIB_BINARY  "${TASK_SCHEDULER_LIB_NAME}.so")
     set (TASK_SCHEDULER_BIN_NAME    "${TASK_SCHEDULER_LIB_NAME}.so")
+    
+    set(ENV{LD_LIBRARY_PATH} "${CMAKE_INSTALL_PREFIX}:$ENV{LD_LIBRARY_PATH}")
+    set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX})
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(STATUS "Building on macOS")
     set(CMAKE_MACOSX_RPATH 1) # Ensure RPATH is correctly set on macOS
@@ -32,7 +37,7 @@ endif()
 
 message(STATUS "CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR}")
 message(STATUS "CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR}")
-
+message(STATUS "LD_LIBRARY_PATH: $ENV{LD_LIBRARY_PATH}")
 # Add subdirectories
 add_subdirectory(${SRC_FOLDER}/lib)   
 add_subdirectory(${SRC_FOLDER}/app)
