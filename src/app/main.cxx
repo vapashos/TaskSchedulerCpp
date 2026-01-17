@@ -14,15 +14,19 @@
 #include <cstring>
 #include <iomanip>
 #ifdef _WIN32
-#include <Windows.h>
-#define LOAD_FUNC_ADDR(moduleHandler, funct)      GetProcAddress(moduleHandler, funct)
-#define MODULE_HANDLER                            HMODULE   
-#define MODULE_NAME "TaskSchedulerLib.dll"
+    #include <Windows.h>
+    #define LOAD_FUNC_ADDR(moduleHandler, funct)      GetProcAddress(moduleHandler, funct)
+    #define MODULE_HANDLER                            HMODULE
+    #define MODULE_NAME "TaskSchedulerLib.dll"
 #else
-#include <dlfcn.h>
-#define LOAD_FUNC_ADDR(moduleHandler, funct)      dlsym(moduleHandler, funct)
-#define MODULE_HANDLER                            void*
-#define MODULE_NAME "libTaskSchedulerLib.so"
+    #include <dlfcn.h>
+    #define LOAD_FUNC_ADDR(moduleHandler, funct)      dlsym(moduleHandler, funct)
+    #define MODULE_HANDLER                            void*
+    #if defined(__APPLE__)
+        #define MODULE_NAME "libTaskSchedulerLib.dylib"
+    #else
+        #define MODULE_NAME "libTaskSchedulerLib.so"
+    #endif
 #endif
 using namespace std;
 

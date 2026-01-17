@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set (SRC_FOLDER "src")
 set (LIB_FOLDER "lib")
 set (CMAKE_INSTALL_PREFIX          ${CMAKE_CURRENT_SOURCE_DIR}/install)
-set (TASK_SCHEDULER_LIB_BINARIES   ${CMAKE_CURRENT_SOURCE_DIR}/build/bin)
+set (TASK_SCHEDULER_LIB_BINARIES   ${CMAKE_CURRENT_SOURCE_DIR}/build/lib)
 # Enable position-independent code (PIC) for shared libraries
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
@@ -32,7 +32,9 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     message(STATUS "Building on macOS")
-    set(CMAKE_MACOSX_RPATH 1) # Ensure RPATH is correctly set on macOS
+    set (TASK_SCHEDULER_LIB_TARGET  "lib${TASK_SCHEDULER_LIB_NAME}.dylib")
+    set (TASK_SCHEDULER_LIB_BINARY  "${TASK_SCHEDULER_LIB_NAME}.dylib")
+    set (TASK_SCHEDULER_BIN_NAME    "${TASK_SCHEDULER_LIB_NAME}.dylib")
 endif()
 
 message(STATUS "CMAKE_BINARY_DIR ${CMAKE_BINARY_DIR}")
